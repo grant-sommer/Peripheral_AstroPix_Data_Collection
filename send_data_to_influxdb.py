@@ -61,7 +61,9 @@ class Influx_Write:
         point=influxdb_client.Point('ToT_Point').tag('Layer',layer).tag('Chip',chip).tag('row',row).tag('col',col).field('ToT',ToT).time(timestamp)
         self.points.append(point)
     
-    def write_housekeeping_point(self, temp, current, voltage, counts, timestamp=None) -> None:
+    def write_housekeeping_point(self, timestamp, fpgatime, fpgatemp, fpgaVCCInt, SecVolt, HVMon, L0Temp, L1Temp, L2Temp,
+                                 L0Current, L1Current, L2Current, L0Frames, L0Idle, L0Wrong, L1Frames, L1Idle, L1Wrong,
+                                 L2Frames, L2Idle, L2Wrong) -> None:
         '''
         takes decoded temp, current, voltage, and fpga_counts as input, add these to a influx record object for housekeeping 
         and appends this record object to the self.points array
@@ -69,10 +71,22 @@ class Influx_Write:
         optional timestamp arguement
         '''
         if timestamp is None:
-            timestamp=datetime.datetime.now(datetime.UTC)
-        point=influxdb_client.Point('Housekeeping_Point').field('Temp', temp).field('Current',current).field('Voltage',voltage).field('FPGA Counts',counts).time(timestamp)
+           timestamp=datetime.datetime.now(datetime.UTC)
+        point=influxdb_client.Point('Housekeeping_Point').field('FPGA_Time', fpgatime).field('FPGA_Temp', fpgatemp).field('FPGA_VCCInt',fpgaVCCInt).field('Sec._Voltage',SecVolt).field('HV_Set',HVMon).field('L0Temp',L0Temp).field('L1Temp',L1Temp).field('L2Temp',L2Temp).field('L0Current',L0Current).field('L1Current',L1Current).field('L2Current',L2Current).field('L0Frames',L0Frames).field('L0Idle',L0Idle).field('L0Wrong',L0Wrong).field('L1Frames',L1Frames).field('L1Idle',L1Idle).field('L1Wrong',L1Wrong).field('L2Frames',L2Frames).field('L2Idle',L2Idle).field('L2Wrong',L2Wrong).time(timestamp)
         self.points.append(point)
     
+    def write_DMM_point(self, DMM_1_DAC_Volt, DMM_2_CB_Volt, timestamp=None) -> None:
+        if timestamp is None:
+           timestamp=datetime.datetime.now(datetime.UTC)
+        point=influxdb_client.Point('Housekeeping_Point').field('DAC_Volt', DMM_1_DAC_Volt).field('CB_Volt', DMM_2_CB_Volt).time(timestamp)
+        self.points.append(point)
+
+    def write_thermocouple_point(self, thermocouple_0, timestamp=None):
+        if timestamp is None:
+           timestamp=datetime.datetime.now(datetime.UTC)
+        point=influxdb_client.Point('Housekeeping_Point').field('Thermo_0', thermocouple_0).time(timestamp)
+        self.points.append(point)
+
     def send_points_to_influx(self):
         '''
         takes no input, sends self.points array object to influx, resets self.points

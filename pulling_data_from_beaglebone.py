@@ -35,20 +35,20 @@ def main(args):
         capture_output=True,
         text=True
     )
-
+    print(result)
     result_list=[i for i in result.stdout.splitlines() if (('.' in i[-6:]) and (i[-1] not in ['0','1','2','3','4','5','6','7','8','9']))]
     track_but_not_decoded_list=[i for i in result_list]
+    print(result_list)
+    # try:
+    #     while True:
+    #         time.sleep(10)
+    #         track_but_not_decoded_list = pull_data_and_decode(args.input, args.output, track_but_not_decoded_list)
 
-    try:
-        while True:
-            time.sleep(10)
-            track_but_not_decoded_list = pull_data_and_decode(args.input, args.output, track_but_not_decoded_list)
-
-    except KeyboardInterrupt as KI:
-        print(KI)
-        print('Exiting cleanly...')
-        track_but_not_decoded_list = pull_data_and_decode(args.input, args.output, track_but_not_decoded_list)
-        print('All done')
+    # except KeyboardInterrupt as KI:
+    #     print(KI)
+    #     print('Exiting cleanly...')
+    #     track_but_not_decoded_list = pull_data_and_decode(args.input, args.output, track_but_not_decoded_list)
+    #     print('All done')
 
 
 if __name__=='__main__':
@@ -64,7 +64,7 @@ if __name__=='__main__':
     )
     parser.add_argument(
         '-o',
-        '-output',
+        '--output',
         type=str,
         required=True,
         help='Output local directory that data is copied to and decoded to, required, no default'
