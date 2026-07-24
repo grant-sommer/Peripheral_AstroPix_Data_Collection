@@ -4,7 +4,7 @@ import argparse
 import re
 import time
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 
 from send_data_to_influxdb import Influx_Write
 
@@ -131,7 +131,11 @@ def decode_post_run(data, write_file, influx_obj=None):
         decoded_string=','.join(str(x) for x in decoded_hit)
         write_file.write(f'{decoded_string}\n')
         if influx_obj is not None:
+            # print('writing housekeeping data to influx object')
+            # print(f'housekeeping TS: {decoded_hit[0]}')
+            # print(f'computer time now: {datetime.now(UTC)}')
             influx_obj.write_housekeeping_point(*decoded_hit)
+            # print(f'influx_obj.points: {influx_obj.points}')
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(
@@ -189,6 +193,7 @@ if __name__=='__main__':
         if data:
             decode_post_run(data,write_file, influx_object)
             influx_object.send_points_to_influx()
+            print(f'sent {args.filename} to influx')
 
 
     else:

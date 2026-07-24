@@ -72,7 +72,10 @@ class Influx_Write:
         '''
         if timestamp is None:
            timestamp=datetime.datetime.now(datetime.UTC)
-        point=influxdb_client.Point('Housekeeping_Point').field('FPGA_Time', fpgatime).field('FPGA_Temp', fpgatemp).field('FPGA_VCCInt',fpgaVCCInt).field('Sec._Voltage',SecVolt).field('HV_Set',HVMon).field('L0Temp',L0Temp).field('L1Temp',L1Temp).field('L2Temp',L2Temp).field('L0Current',L0Current).field('L1Current',L1Current).field('L2Current',L2Current).field('L0Frames',L0Frames).field('L0Idle',L0Idle).field('L0Wrong',L0Wrong).field('L1Frames',L1Frames).field('L1Idle',L1Idle).field('L1Wrong',L1Wrong).field('L2Frames',L2Frames).field('L2Idle',L2Idle).field('L2Wrong',L2Wrong).time(timestamp)
+        native_dt = datetime.datetime.strptime(timestamp.strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
+        utc_dt = native_dt.astimezone(datetime.timezone.utc)
+        # point=influxdb_client.Point('Housekeeping_Point').field('FPGA_Time', fpgatime).field('FPGA_Temp', fpgatemp).field('FPGA_VCCInt',fpgaVCCInt).field('Sec._Voltage',SecVolt).field('HV_Set',HVMon).field('L0Temp',L0Temp).field('L1Temp',L1Temp).field('L2Temp',L2Temp).field('L0Current',L0Current).field('L1Current',L1Current).field('L2Current',L2Current).field('L0Frames',L0Frames).field('L0Idle',L0Idle).field('L0Wrong',L0Wrong).field('L1Frames',L1Frames).field('L1Idle',L1Idle).field('L1Wrong',L1Wrong).field('L2Frames',L2Frames).field('L2Idle',L2Idle).field('L2Wrong',L2Wrong).time(timestamp)
+        point=influxdb_client.Point('Housekeeping_Point').field('FPGA_Time', fpgatime).field('FPGA_Temp', fpgatemp).field('FPGA_VCCInt',fpgaVCCInt).field('Sec._Voltage',SecVolt).field('HV_Set',HVMon).field('L0Temp',L0Temp).field('L1Temp',L1Temp).field('L2Temp',L2Temp).field('L0Current',L0Current).field('L1Current',L1Current).field('L2Current',L2Current).field('L0Frames',L0Frames).field('L0Idle',L0Idle).field('L0Wrong',L0Wrong).field('L1Frames',L1Frames).field('L1Idle',L1Idle).field('L1Wrong',L1Wrong).field('L2Frames',L2Frames).field('L2Idle',L2Idle).field('L2Wrong',L2Wrong).time(utc_dt)
         self.points.append(point)
     
     def write_DMM_point(self, DMM_1_DAC_Volt, DMM_2_CB_Volt, timestamp=None) -> None:

@@ -292,7 +292,7 @@ if __name__=='__main__':
     running_file_length=0
     
     start_time=datetime.now()
-    print(f'\nStart Time: {datetime.strftime(start_time,"%Y-%m-%d   %H:%M:%S")}\n')
+    # print(f'\nStart Time: {datetime.strftime(start_time,"%Y-%m-%d   %H:%M:%S")}\n')
 
     stored_split_first_part=None
     line_counter=0
@@ -304,6 +304,7 @@ if __name__=='__main__':
     if data:
         stored_split_first_part, line_counter, grid_counts = live_decode(data,write_file,influx_object, stored_split_first_part, line_counter, grid_counts)
         influx_object.send_points_to_influx()
+        print(f'sent {args.filename} to influx')
 
     write_file.close()
 
