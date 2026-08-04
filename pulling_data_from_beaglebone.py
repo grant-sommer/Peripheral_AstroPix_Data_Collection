@@ -4,9 +4,13 @@ import argparse
 
 def pull_data_and_decode(input_remote_directory:str, output_local_directory:str, track_but_not_decoded_list:list):
     decode_list = []
+    linux_in_dir = '/'.join(input_remote_directory.split('\\'))
+    if linux_in_dir[:39]!='debian@[fe80::6e30:2aff:febe:9859%eth0]':
+        linux_in_dir=linux_in_dir.split(':')[1]
+        linux_in_dir=':'.join(['debian@[fe80::6e30:2aff:febe:9859%eth0',linux_in_dir])
 
     result = subprocess.run(
-                ["wsl", "sshpass", "-p", "gs66c235","rsync", "-avz", "--progress", "--out-format=%n", f"{input_remote_directory}", f"{output_local_directory}"],
+                ["wsl", "sshpass", "-p", "gs66c235","rsync", "-avz", "--progress", "--out-format=%n", f"{linux_in_dir}", f"{output_local_directory}"],
                 capture_output=True,
                 text=True
             )
